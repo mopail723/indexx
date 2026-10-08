@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>จดหมายขอโทษ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#fbe0e8;--bg2:#c9d4f6;--card:rgba(255,255,255,.74);--ink:#2b2b3a;--sub:#666a82;--accent:#e04a52;--on:#fff;--soft:#eef2fc;--glow:#f9d2da;--line:rgba(43,43,58,.12);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#2d1a3c;--bg2:#101530;--card:rgba(33,37,64,.74);--ink:#f2f3fb;--sub:#aeb2cf;--soft:#2c3156;--glow:#4d2b3e;--line:rgba(255,255,255,.14)}}
+:root[data-theme="dark"]{--bg1:#2d1a3c;--bg2:#101530;--card:rgba(33,37,64,.74);--ink:#f2f3fb;--sub:#aeb2cf;--soft:#2c3156;--glow:#4d2b3e;--line:rgba(255,255,255,.14)}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg2)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;color:var(--ink);font-family:"Mali","Noto Sans Thai","Sarabun",sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));
+  display:flex;align-items:center;justify-content:center;padding:16px;overflow-x:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.card{position:relative;z-index:1;width:100%;max-width:390px;background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:30px;padding:22px 22px 26px;text-align:center;box-shadow:0 24px 60px -24px rgba(30,30,80,.45)}
+.dots{display:flex;gap:6px;justify-content:center;margin-bottom:10px;min-height:8px}
+.dots i{width:8px;height:8px;border-radius:8px;background:var(--line);transition:all .4s}
+.dots i.on{width:26px;background:var(--accent)}
+.to{font-size:.85rem;color:var(--sub);margin:0 0 6px;min-height:1.3em}
+.stage{background:radial-gradient(circle at 50% 62%,var(--glow),var(--soft) 72%);border-radius:24px;padding:10px;margin-bottom:16px;min-height:180px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+svg.char, img.char, video.char{width:100%;max-width:210px;max-height:180px;object-fit:contain;display:block;margin:0 auto;border-radius:16px}
+svg.char, img.char{animation:float 3.6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.ear{transform-box:fill-box;transform-origin:50% 8%}.ear.l{animation:wig 5s infinite}.ear.r{animation:wig 5s 1.2s infinite reverse}
+@keyframes wig{0%,85%,100%{transform:rotate(0)}92%{transform:rotate(7deg)}}
+#eyes-open{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+#tears{animation:drip 1.7s infinite}@keyframes drip{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(16px);opacity:0}}
+h1{font-size:1.28rem;line-height:1.5;margin:0 0 8px;font-weight:700;min-height:1.5em}
+p.sub{font-size:.92rem;line-height:1.7;color:var(--sub);margin:0 0 16px;min-height:3.4em}
+.list{list-style:none;margin:0 0 16px;padding:0;text-align:left;display:flex;flex-direction:column;gap:9px}
+.list li{display:flex;gap:11px;align-items:flex-start;background:var(--soft);border-radius:16px;padding:10px 13px;opacity:0;transform:translateY(8px);transition:all .55s}
+.list li.in{opacity:1;transform:none}
+.list li span.k{flex:none;font-size:1.15rem;line-height:1.4}
+.list li b{display:block;font-size:.92rem}.list li small{color:var(--sub);font-size:.8rem;line-height:1.5}
+.list li .bx{flex:1;min-width:0}
+.list li.exp{cursor:pointer;border:1px solid transparent}.list li.exp:hover{border-color:var(--line)}
+.list li.exp:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.list li .chev{flex:none;align-self:center;color:var(--sub);font-size:.8rem;transition:transform .3s}
+.list li.open .chev{transform:rotate(180deg)}.list li.open{background:var(--glow)}
+.more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s}
+.more>div{overflow:hidden}.more p{margin:8px 0 2px;padding-top:8px;border-top:1px dashed var(--line);font-size:.86rem;line-height:1.75;white-space:pre-line}
+.list li.open .more{grid-template-rows:1fr}
+.hint{font-size:.76rem;color:var(--sub);margin:-6px 0 14px}
+.btns{display:flex;flex-direction:column;gap:8px;align-items:center;transition:opacity .5s}
+button{font:inherit;cursor:pointer;border:0;border-radius:16px;padding:13px 18px;width:100%;font-weight:600;font-size:1rem;color:inherit;background:none}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.yes{background:var(--accent);color:var(--on);box-shadow:0 10px 24px -10px var(--accent);transition:transform .3s}
+.no{color:var(--sub);font-weight:400;padding:8px;transition:font-size .3s}
+.swap{animation:pop .45s ease}@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.stamp{margin:0 0 14px;font-size:.82rem;color:var(--sub);border-top:1px dashed var(--line);padding-top:12px}
+.mute{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:3;width:42px;height:42px;padding:0;border-radius:50%;background:var(--card);border:1px solid var(--line);font-size:1.1rem}
+.envwrap{padding:6px 0 4px}
+.env{position:relative;width:240px;height:160px;margin:26px auto 14px;padding:0;border-radius:10px;background:#f3c1cb;animation:bob 3s ease-in-out infinite;overflow:visible;perspective:700px}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.env .paper{position:absolute;left:14px;right:14px;top:10px;bottom:8px;background:#fff;border-radius:6px;z-index:1;transition:transform .9s .35s;padding:18px 0;font-size:.8rem;color:#8a8aa3}
+.env .front{position:absolute;inset:0;background:#efb0bc;clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);border-radius:10px;z-index:2}
+.env .flap{position:absolute;left:0;right:0;top:0;height:92px;background:#e59aa9;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .8s;z-index:3}
+.env .seal{position:absolute;left:50%;top:70px;transform:translateX(-50%);font-size:30px;z-index:4;transition:opacity .3s}
+.env.open{animation:none}.env.open .flap{transform:rotateX(180deg);z-index:0}.env.open .paper{transform:translateY(-78px)}.env.open .seal{opacity:0}
+.alt{background:var(--soft);color:var(--ink)}
+.ta{width:100%;min-height:120px;border:1px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:.92rem;line-height:1.6;background:var(--soft);color:var(--ink);resize:vertical;margin-bottom:12px}
+button:disabled{opacity:.45;cursor:default}
+.devb{position:fixed;left:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:3;width:34px;height:34px;padding:0;border-radius:50%;opacity:.4;font-size:1rem;background:var(--card);border:1px solid var(--line)}
+.dev{position:fixed;inset:0;z-index:10;overflow:auto;background:var(--bg2);padding:calc(14px + env(safe-area-inset-top,0px)) 14px 40px}
+.dev .wrap{max-width:560px;margin:0 auto;text-align:left}.dev h2{font-size:1.05rem;margin:18px 0 6px}
+.dev .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.dev .row button{width:auto;padding:8px 14px;font-size:.86rem;background:var(--soft);color:var(--ink)}
+.dev label{display:block;font-size:.76rem;color:var(--sub);margin-top:6px}
+.in{width:100%;border:1px solid var(--line);border-radius:12px;padding:9px 11px;font:inherit;font-size:.9rem;background:var(--soft);color:var(--ink);margin:4px 0 6px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:10px}.box button{margin-top:8px;padding:8px;font-size:.86rem}
+.ev{font-size:.84rem;padding:4px 0;border-bottom:1px dashed var(--line);line-height:1.6}
+.hide{display:none!important}
+.media-preview{max-width:120px;max-height:90px;border-radius:8px;margin-top:6px;display:block}
+.lock-overlay{position:fixed;inset:0;z-index:9;background:var(--bg2);display:flex;align-items:center;justify-content:center;padding:20px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<button class="mute" id="mute" aria-label="เปิดหรือปิดเสียง">🔈</button>
+<button class="devb" id="dev" aria-label="ผู้พัฒนา">⚙</button>
+
+<!-- ป๊อปอัปยืนยันคีย์ก่อนเปิดอ่านสำหรับผู้รับปลายทาง -->
+<div id="lockScreen" class="lock-overlay hide">
+  <div class="card">
+    <h2>🔒 กรอกคีย์ยืนยันตัวตน</h2>
+    <p class="sub">ผู้ส่งได้ตั้งคีย์ความปลอดภัยไว้ กรุณากรอกคีย์จากผู้ส่งเพื่อเชื่อมต่อ:</p>
+    <input type="password" id="recipientKeyInput" class="in" placeholder="ใส่คีย์เชื่อมต่อที่นี่">
+    <p id="lockMsg" class="sub" style="color:var(--accent)"></p>
+    <button id="lockSubmitBtn" class="yes">ยืนยันและเปิดอ่าน</button>
+  </div>
+</div>
+
+<main class="card" aria-live="polite">
+  <section id="intro" class="envwrap">
+    <p class="to" id="toI"></p>
+    <h1 style="min-height:0" id="mainTitle">มีจดหมายส่งมาถึงเธอ</h1>
+    <button class="env" id="env" aria-label="เปิดจดหมาย"><span class="paper" id="paperText">เค้าเขียนเอง…</span><span class="front"></span><span class="flap"></span><span class="seal">❤️</span></button>
+    <p class="sub" style="min-height:0" id="subTitle">แตะที่ซองเพื่อเปิดอ่าน</p>
+  </section>
+  <section id="story" class="hide">
+    <div class="dots" id="dots"></div>
+    <div class="stage" id="stageArea">
+      <svg class="char" id="svgChar" viewBox="0 0 200 200" role="img" aria-label="ลูกหมาตัวน้อยกำลังขอโทษ">
+        <ellipse cx="100" cy="188" rx="52" ry="7" fill="#000" opacity=".08"/>
+        <g class="ear l"><ellipse cx="42" cy="104" rx="20" ry="40" fill="#2b2b3a" transform="rotate(14 42 104)"/></g>
+        <g class="ear r"><ellipse cx="158" cy="104" rx="20" ry="40" fill="#2b2b3a" transform="rotate(-14 158 104)"/></g>
+        <ellipse cx="100" cy="112" rx="68" ry="60" fill="#fff" stroke="#2b2b3a" stroke-width="3"/>
+        <ellipse cx="62" cy="128" rx="11" ry="7" fill="#f6a3b0" opacity=".75"/><ellipse cx="138" cy="128" rx="11" ry="7" fill="#f6a3b0" opacity=".75"/>
+        <g id="eyes-open"><circle cx="74" cy="106" r="7" fill="#2b2b3a"/><circle cx="126" cy="106" r="7" fill="#2b2b3a"/><circle cx="76" cy="103" r="2.4" fill="#fff"/><circle cx="128" cy="103" r="2.4" fill="#fff"/></g>
+        <g id="eyes-happy" display="none" fill="none" stroke="#2b2b3a" stroke-width="4" stroke-linecap="round"><path d="M65 108q9-12 18 0"/><path d="M117 108q9-12 18 0"/></g>
+        <g id="brows" fill="none" stroke="#2b2b3a" stroke-width="3" stroke-linecap="round"><path id="bl" d="M64 90l20-4"/><path id="br" d="M136 90l-20-4"/></g>
+        <g id="tears" display="none" fill="#7cc4ff"><path d="M70 118q-7 12 0 14q7-2 0-14z"/><path d="M130 118q-7 12 0 14q7-2 0-14z"/></g>
+        <ellipse cx="100" cy="123" rx="8" ry="5.5" fill="#2b2b3a"/>
+        <path id="mouth" d="M88 140q12-8 24 0" fill="none" stroke="#2b2b3a" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M72 166q28 14 56 0l-6 14q-22 8-44 0z" fill="#e04a52"/>
+        <path id="hold" display="none" d="M100 196c-24-13-26-30-13-34 8-2 13 3 13 9 0-6 5-11 13-9 13 4 11 21-13 34z" fill="#ff6b7a" stroke="#fff" stroke-width="2"/>
+      </svg>
+      <img id="imgChar" class="char hide" src="" alt="รูปภาพประกอบ">
+      <video id="vidChar" class="char hide" autoplay loop muted playsinline></video>
+    </div>
+    <p class="to" id="to"></p>
+    <div id="view" class="swap"></div>
+  </section>
+</main>
+<script>
+var $ = function(i){ return document.getElementById(i); };
+function h(t,c,x){
+  var e=document.createElement(t);
+  if(c)e.className=c;
+  if(x!=null)e.textContent=x;
+  return e;
+}
+
+var DEFAULT_CFG={
+  endpoint: "https://script.google.com/macros/s/AKfycbywRHHqcG72jiET3F66nn2UqDLaENCqoRl5ND6_NTgi2II52uI5hBWQA5roxvzU1DDJ/exec",
+  mediaList: {},
+  titles:{
+    mainTitle: "มีจดหมายส่งมาถึงเธอ",
+    paperText: "เค้าเขียนเอง…",
+    subTitle: "แตะที่ซองเพื่อเปิดอ่าน",
+    page0Title: "เค้าขอโทษนะ",
+    page0Sub: "เค้าคิดถึงเรื่องที่ผ่านมาทุกวัน และอยากให้เธอได้ฟังจากใจจริงก่อน",
+    page1Title: "สิ่งที่เค้าจำได้เสมอ",
+    page2Title: "สิ่งที่เค้าสัญญา"
+  },
+  memories:[
+    ["วันแรกที่เรารู้จักกันและได้คุยกัน","แต่ได้คุยกันนิดเดียว แต่มันคือจุดเริ่มต้น (คลิกเพื่ออ่านเพิ่มได้)","มันเป็นช่วง ม.6 ในตอนนั้นเรา2คนยังเป็นคนแปลกหน้ากันอยู่ และ ยังไม่เคยได้คุยอะไรกันเลย จนมีวันหนึ่งมันเป็นกิจกรรมอะไรของโรงเรียน และ ตอนนั้นเค้าก็กำลังเดินไปเข้าร่วม และ เธอก็ทักเค้าเพื่อถามอะไรนี่ละ ตอนนั้นเองนี่ละมันก็คือ จุดเริ่มต้นที่ได้คุยกัน"],
+    ["วันที่เค้าทักไปหาเธอ","ที่ทักไปคุยเรื่องมาร์กแต่จริงๆแค่หาเรื่องคุยกับเธอ555 (คลิกเพื่ออ่านเพิ่มได้)","เอาจริงๆในตอนนั้นไม่รู้ว่าจะทักไปหาเธอยังไงดีจริงๆเค้าวางแผนจะทักเธอไปหลายวันแล้วแต่ก็ไม่กล้าทักไป แล้วเวลาก็ผ่านไปไม่กี่วันเค้าก็เตรียมใจได้แต่ก็ไม่รู้จะเปิดด้วยเรื่องอะไรดี ตอนแรกคิดจะเปิดบทสนทนาแบบธรรมดาทั่วไปแต่กลัวเธอไม่อ่านก็เลยทักไปเรื่องของมาร์กแทน แล้วค่อยจีบเธอแบบเนียนๆ555"],
+    ["ความรู้สึกตลอด 6 เดือนที่ได้คบกับเธอ (สำคัญ)","(คลิกเพื่ออ่านความรู้สึกทั้งหมด)","ก่อนอื่นเค้าอยากขอบคุณเธอที่อยู่ได้จนถึง 6 เดือน 6เดือนมานี้พวกเราได้มีควาสุขกันมากจริงๆ มันมีทั้งความสุข และ ความทุกข์ปนกันไป เค้าชอบรอยยิ้มเธอตลอดมาเลยมันเป็นรอยยิ้มที่สวยมากๆ และ เธอก็เป็นคนแรกของหลายๆอย่างของเค้า และเค้าก็ชอบที่เธอเป็นตัวเองตอนอยู่กับเค้า เธอรู้ไหมเธอเป็นคนที่น่ารักมากเลย ในตอนที่เธอไม่โมโห เค้าอยากให้เธอยิ้มเยอะๆและอยากเห็นรอยยิ้มนั้นอีกครั้ง "]
+  ],
+  promises:[
+    ["อยู่รักเธอจนกว่าเธอจะหมดรัก","","เค้าทำได้แล้วนะ เค้าเก่งไหม"]
+  ],
+  asks:[
+    {m:"sad",t:"เอาจริงๆเค้ายังไม่พร้อมเลย มันยังพอมีหวังที่ให้เธอกลับมารักไหม",s:"ทำแบบนี้เค้ารู้ว่ามันเห็นแก่ตัวแค่ไหน",y:"ให้โอกาสอีกครั้ง",n:"น่าจะไม่มีหวังแล้ว"},
+    {m:"beg",t:"ลองคิดอีกรอบจะได้ไหม",s:"กว่าเราจะได้เจอกัน กว่าจะได้รู้จักกัน กว่าจะได้เป็นแฟนกัน กว่าจะคบได้นานแบบนี้ มันไม่ง่ายเลยนะ",y:"ลองอีกสักครั้งก็ได้",n:"อาจจะสายเกินไปแล้ว"},
+    {m:"cry",t:"โอเคเค้าเตรียมใจไว้แล้วละ",s:"เค้าคงต้องทำใจ",y:"เริ่มใหม่ด้วยกัน",n:"ขอโทษนะ"},
+    {m:"cry",t:"คลิกสุดท้ายแล้ว หัวใจดวงนี้รอเธออยู่",s:"มันคงสายไปมากแล้วจริงๆ",y:"คิดดูดีๆแล้วมันอาจจะยังไม่สายนะ",n:"ยังไม่พร้อม",k:"เป็นเพื่อนกันเหมือนดีแล้ว"}
+  ]
+};
+
+var savedData = localStorage.getItem("apology_cfg");
+var CFG = savedData ? JSON.parse(savedData) : JSON.parse(JSON.stringify(DEFAULT_CFG));
+if(!CFG.mediaList) CFG.mediaList = {};
+
+function applyTitles(){
+  if(CFG.titles){
+    if($("mainTitle")) $("mainTitle").textContent = CFG.titles.mainTitle || DEFAULT_CFG.titles.mainTitle;
+    if($("paperText")) $("paperText").textContent = CFG.titles.paperText || DEFAULT_CFG.titles.paperText;
+    if($("subTitle")) $("subTitle").textContent = CFG.titles.subTitle || DEFAULT_CFG.titles.subTitle;
+  }
+}
+applyTitles();
+
+var RM=matchMedia("(prefers-reduced-motion:reduce)").matches,view=$("view"),T=[],muted=false,ac;
+var q=new URLSearchParams(location.search),to=q.get("to");
+var SITE=(q.get("s")||"main").toLowerCase().replace(/[^a-z0-9_]/g,"").slice(0,16)||"main";
+
+if(to){
+  $("to").textContent="ถึง "+to;
+  $("toI").textContent="ถึง "+to;
+  // บังคับปลดล็อกคีย์ถ้าเปิดจากลิงก์ระบุชื่อผู้รับ
+  var isUnlocked = localStorage.getItem("unlocked_" + to.toLowerCase());
+  if(!isUnlocked){
+    $("lockScreen").classList.remove("hide");
+  }
+}
+
+$("lockSubmitBtn").onclick = function(){
+  var passkey = $("recipientKeyInput").value.trim();
+  if(!passkey){ $("lockMsg").textContent = "กรุณากรอกคีย์"; return; }
+  $("lockMsg").textContent = "กำลังตรวจสอบคีย์...";
+  
+  jp("a=verify_recipient&to=" + encodeURIComponent(to) + "&passkey=" + encodeURIComponent(passkey)).then(function(res){
+    if(res.ok){
+      localStorage.setItem("unlocked_" + to.toLowerCase(), "true");
+      $("lockScreen").classList.add("hide");
+    } else {
+      $("lockMsg").textContent = res.message || "คีย์ไม่ถูกต้อง";
+    }
+  });
+};
+
+var sid=Math.random().toString(36).slice(2,8);
+
+function track(ev,d){
+  if(currentDevToken) return;
+  if(!CFG.endpoint || CFG.endpoint.indexOf("http")!==0)return;
+  try{
+    fetch(CFG.endpoint,{
+      method:"POST",
+      mode:"no-cors",
+      keepalive:true,
+      body:JSON.stringify({s:SITE,sid:sid,ev:ev,d:d==null?"":String(d),to:to||""})
+    });
+  }catch(e){}
+}
+
+function later(f,ms){T.push(setTimeout(f,ms))}
+function clr(){T.forEach(clearTimeout);T=[]}
+
+function chime(f){
+  if(muted)return;
+  try{
+    ac=ac||new(window.AudioContext||window.webkitAudioContext)();
+    var o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;
+    o.type="sine";o.frequency.value=f;
+    g.gain.setValueAtTime(.0001,t);
+    g.gain.exponentialRampToValueAtTime(.12,t+.03);
+    g.gain.exponentialRampToValueAtTime(.0001,t+1);
+    o.connect(g);g.connect(ac.destination);
+    o.start(t);o.stop(t+1.1);
+  }catch(e){}
+}
+
+$("mute").onclick=function(){muted=!muted;this.textContent=muted?"🔇":"🔈"};
+
+function typer(el,x,done){
+  if(RM){el.textContent=x;done&&done();return}
+  var n=0;
+  (function k(){
+    el.textContent=x.slice(0,++n);
+    if(n<x.length)later(k,32);else done&&done();
+  })()
+}
+
+var M={
+  sad:{b:["M64 94l20-6","M136 94l-20-6"],m:"M88 142q12-9 24 0"},
+  beg:{b:["M64 96l20-12","M136 96l-20-12"],m:"M92 142q8-7 16 0"},
+  cry:{b:["M64 98l20-14","M136 98l-20-14"],m:"M88 144q12-12 24 0",c:1},
+  happy:{b:["M64 90l20-2","M136 90l-20-2"],m:"M84 134q16 18 32 0",h:1}
+};
+
+function setSceneMedia(sceneKey, defaultMoodKey){
+  var mData = CFG.mediaList ? CFG.mediaList[sceneKey] : null;
+  $("svgChar").classList.add("hide");
+  $("imgChar").classList.add("hide");
+  $("vidChar").classList.add("hide");
+
+  if(mData){
+    if(mData.indexOf("data:video")===0 || mData.match(/\.(mp4|webm|ogg)/i)){
+      $("vidChar").src = mData;
+      $("vidChar").classList.remove("hide");
+      return;
+    } else {
+      $("imgChar").src = mData;
+      $("imgChar").classList.remove("hide");
+      return;
+    }
+  }
+
+  $("svgChar").classList.remove("hide");
+  var o=M[defaultMoodKey] || M["sad"];
+  $("bl").setAttribute("d",o.b[0]);$("br").setAttribute("d",o.b[1]);$("mouth").setAttribute("d",o.m);
+  $("tears").setAttribute("display",o.c?"":"none");
+  $("eyes-open").setAttribute("display",o.h?"none":"");
+  $("eyes-happy").setAttribute("display",o.h?"":"none");
+  $("brows").setAttribute("display",o.h?"none":"");
+  $("hold").setAttribute("display",o.h?"":"none");
+}
+
+function dots(n){
+  var d=$("dots");
+  if(!d.children.length)for(var i=0;i<4;i++)d.appendChild(h("i"));
+  [].forEach.call(d.children,function(e,i){e.className=i===n?"on":""});
+}
+
+function fresh(){clr();view.innerHTML="";view.classList.remove("swap");void view.offsetWidth;view.classList.add("swap")}
+
+function btns(list){
+  var b=h("div","btns");
+  list.forEach(function(x){var e=h("button",x.c,x.t);e.onclick=x.f;b.appendChild(e)});
+  view.appendChild(b);
+  return b;
+}
+
+function page(n){
+  track("เปิดอ่านหน้า", n+1); fresh(); dots(n);
+  var ti=h("h1"),su=h("p","sub");
+  view.append(ti,su);
+  if(n===0){
+    setSceneMedia("page0", "sad");
+    typer(ti, CFG.titles.page0Title || DEFAULT_CFG.titles.page0Title, function(){
+      typer(su, CFG.titles.page0Sub || DEFAULT_CFG.titles.page0Sub, function(){
+        chime(523);
+        btns([{c:"yes",t:"อ่านต่อ",f:function(){chime(587);page(1)}}]);
+      });
+    });
+  }else{
+    var data=n===1?CFG.memories:CFG.promises;
+    setSceneMedia(n===1 ? "page1" : "page2", "beg");
+    su.style.display="none";
+    var titleText = n===1 ? (CFG.titles.page1Title || DEFAULT_CFG.titles.page1Title) : (CFG.titles.page2Title || DEFAULT_CFG.titles.page2Title);
+    typer(ti, titleText, function(){
+      var ul=h("ul","list");
+      view.appendChild(ul);
+      var anyMore=false;
+      data.forEach(function(d,i){
+        var a=[].concat(d),li=h("li"),mk=h("span","k",n===1?"🌸":"✔️"),bx=h("div","bx");
+        bx.append(h("b",0,a[0]));
+        if(a[1])bx.append(h("small",0,a[1]));
+        li.append(mk,bx);
+        if(a[2]){
+          anyMore=true;
+          var mo=h("div","more"),inn=h("div");
+          inn.appendChild(h("p",0,a[2]));
+          mo.appendChild(inn);
+          bx.appendChild(mo);
+          li.classList.add("exp");
+          li.tabIndex=0;
+          li.setAttribute("role","button");
+          li.setAttribute("aria-expanded","false");
+          li.appendChild(h("span","chev","▼"));
+          var tg=function(){
+            var o=!li.classList.contains("open");
+            [].forEach.call(ul.children,function(x){x.classList.remove("open");x.setAttribute("aria-expanded","false")});
+            if(o){
+              track("แตะอ่านรายละเอียด", a[0]);
+              li.classList.add("open");
+              li.setAttribute("aria-expanded","true");
+              chime(659);
+            }
+          };
+          li.onclick=tg;
+          li.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();tg()}};
+        }
+        ul.appendChild(li);
+        later(function(){li.classList.add("in");chime(523+i*110)},500+i*750);
+      });
+      if(anyMore)later(function(){ul.after(h("p","hint","แตะแต่ละข้อเพื่อดูรายละเอียด"))},500+data.length*750);
+      later(function(){
+        btns([{c:"yes",t:"อ่านต่อ",f:function(){chime(587);n===1?page(2):ask(0)}}]);
+      },500+data.length*750+300);
+    });
+  }
+}
+
+function ask(i){
+  track("แสดงคำถามข้อที่", i+1); fresh(); dots(3);
+  var a=CFG.asks[i];
+  setSceneMedia("ask"+i, a.m);
+  var ti=h("h1"),su=h("p","sub");
+  view.append(ti,su);
+  typer(ti,a.t,function(){
+    su.textContent=a.s;
+    var L=[
+      {c:"yes",t:a.y,f:happy},
+      {c:"no",t:a.n,f:function(){track("กดปฏิเสธคำถามข้อที่", i+1);chime(392);i+1<CFG.asks.length?ask(i+1):wait()}}
+    ];
+    if(a.k)L.push({c:"no",t:a.k,f:friend});
+    var b=btns(L);
+    b.children[0].style.transform="scale("+(1+i*.06)+")";
+    b.children[1].style.fontSize=(.88-i*.1)+"rem";
+  });
+}
+
+function happy(){
+  track("กดตอบจบเกม", "ให้โอกาส"); fresh(); dots(3); setSceneMedia("happy", "happy"); chime(659);
+  later(function(){chime(784)},180);
+  later(function(){chime(988)},360);
+  burst();
+  var ti=h("h1","","ขอบคุณที่ให้โอกาสนะ"),su=h("p","sub","เค้าจะตั้งใจดูแลความรู้สึกของเธอให้ดีที่สุด");
+  var st=h("p","stamp","วันที่ "+new Date().toLocaleDateString("th-TH",{day:"numeric",month:"long",year:"numeric"})+" เป็นวันที่เราเริ่มใหม่ด้วยกัน");
+  view.append(ti,su,st);
+  btns([{c:"no",t:"อ่านจดหมายอีกครั้ง",f:function(){page(0)}}]);
+  later(burst,1800);
+}
+
+function friend(){
+  track("กดตอบจบเกม", "เป็นเพื่อนกัน"); fresh(); dots(3); setSceneMedia("friend", "sad"); chime(440);
+  var ti=h("h1","","ขอบคุณที่ยังเป็นเพื่อนกันนะ"),su=h("p","sub","แล้วเพื่อนของเธอกับเค้า ทำทุกอย่างเหมือนเดิมไหม?");
+  view.append(ti,su);
+  btns([{c:"yes",t:"ใช่ เหมือนเดิม",f:friendSame},{c:"alt",t:"อาจจะไม่เหมือนเดิมทั้งหมด",f:notSame}]);
+}
+
+function friendSame(){
+  track("เลือกสถานะเพื่อน", "เหมือนเดิม"); fresh(); dots(3); setSceneMedia("friendSame", "beg"); chime(523);
+  view.append(h("h1","","ดีใจที่ยังเหมือนเดิมนะ"),h("p","sub","ขอบคุณที่ยังเป็นเพื่อนกัน ขอให้เธอมีความสุขมากๆ"));
+}
+
+function notSame(){
+  track("เลือกสถานะเพื่อน", "ไม่เหมือนเดิมทั้งหมด"); fresh(); dots(3); setSceneMedia("notSame", "beg");
+  var ti=h("h1","","ไม่เหมือนเดิมตรงไหนบ้าง?"),su=h("p","sub","พิมพ์บอกเค้าได้เลย"),ta=h("textarea","ta");
+  ta.maxLength=600;ta.placeholder="พิมพ์ตรงนี้...";
+  view.append(ti,su,ta);
+  var b=btns([{c:"yes",t:"ส่งให้เค้า",f:function(){
+    track("พิมพ์ความรู้สึกส่งมา", ta.value.trim()); chime(523); fresh(); dots(3); setSceneMedia("notSameDone", "beg");
+    view.append(h("h1","","ขอบคุณที่บอกนะ"),h("p","sub","เค้าได้รับแล้ว และจะตั้งใจอ่านทุกคำที่เธอเขียน"));
+  }}]);
+  var sb=b.firstChild;
+  sb.disabled=true;
+  ta.oninput=function(){sb.disabled=!ta.value.trim()};
+}
+
+function wait(){
+  track("กดตอบจบเกม", "ขอเวลาคิด/รอเงียบๆ"); fresh(); dots(3); setSceneMedia("wait", "beg");
+  var ti=h("h1","","ไม่เป็นไรนะ เค้าจะรอเงียบ ๆ"),su=h("p","sub","ไม่ว่าจะพร้อมตอนไหน เค้าก็ยังอยู่ตรงนี้ และขอบคุณที่ตั้งใจอ่านจนจบ");
+  view.append(ti,su);
+  btns([{c:"yes",t:"เปลี่ยนใจแล้ว ให้โอกาส",f:happy},{c:"no",t:"ดูอีกครั้งตั้งแต่ต้น",f:function(){page(0)}}]);
+}
+
+track("เข้าชมเว็บไซต์", "เริ่มต้น");
+$("env").onclick=function(){
+  if(this.classList.contains("open"))return;
+  track("แตะเปิดซองจดหมาย", "สำเร็จ");
+  this.classList.add("open");
+  chime(523);
+  later(function(){chime(784)},300);
+  later(function(){
+    $("intro").classList.add("hide");
+    $("story").classList.remove("hide");
+    page(0);
+  },RM?50:1500);
+};
+
+/* ===== โหมดผู้พัฒนา (ระบบคีย์แยก + แชร์ลิงก์ง่าย) ===== */
+var currentDevToken = null;
+var currentUserRole = null;
+var userChildKey = null;
+
+function jp(q){
+  return new Promise(function(res,rej){
+    var cb="jp"+Math.random().toString(36).slice(2),
+        el=document.createElement("script"),
+        t=setTimeout(function(){fin();rej("timeout")},12000);
+    function fin(){clearTimeout(t);delete window[cb];el.remove()}
+    window[cb]=function(d){fin();res(d)};
+    el.onerror=function(){fin();rej("load")};
+    el.src=CFG.endpoint+"?"+q+"&cb="+cb+"&_="+Date.now();
+    document.head.appendChild(el);
+  });
+}
+
+$("dev").onclick=function(){
+  login();
+};
+
+function ovl(){
+  var o=h("div","dev"),w=h("div","wrap");
+  o.appendChild(w);document.body.appendChild(o);
+  return {o:o,w:w};
+}
+
+function login(){
+  var g=ovl(),i=h("input","in"),m=h("p","sub",""),go=h("button","yes","เข้าสู่ระบบ"),cl=h("button","no","ปิด");
+  i.type="password";
+  i.placeholder="ใส่รหัสผ่านแม่ หรือ คีย์ผู้พัฒนาลูก";
+  i.autocomplete="off";
+  go.onclick=function(){
+    var k=i.value.trim();
+    if(!k)return;
+    m.textContent="กำลังตรวจสอบ...";
+    jp("a=redeem&key="+encodeURIComponent(k)).then(function(r){
+      if(r.ok){
+        currentDevToken = r.token;
+        currentUserRole = r.role;
+        userChildKey = k;
+        panel();
+        g.o.remove();
+      }else{
+        m.textContent=r.message||"คีย์ไม่ถูกต้อง";
+      }
+    }).catch(function(){
+      m.textContent="ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้";
+    });
+  };
+  cl.onclick=function(){g.o.remove()};
+  g.w.append(h("h2",0,"🔑 เข้าสู่ระบบผู้พัฒนา"),i,m,go,cl);
+}
+
+function panel(){
+  var g=ovl(),b=h("div"),tabs=h("div","row");
+  
+  function tab(t,f){var e=h("button","",t);e.onclick=f;tabs.appendChild(e)}
+  
+  function logs(filterTo){
+    b.textContent="กำลังโหลดประวัติการใช้งาน...";
+    var targetParam = filterTo ? "&targetTo=" + encodeURIComponent(filterTo) : "";
+    jp("a=log&t="+encodeURIComponent(currentDevToken) + targetParam).then(function(r){
+      if(!r.ok){b.textContent="ไม่มีสิทธิ์เข้าถึงข้อมูล";return}
+      b.innerHTML="";
+      
+      var ctrlBox = h("div", "row");
+      var refreshBtn = h("button", "alt", "🔄 รีเฟรชข้อมูล");
+      refreshBtn.onclick = function(){ logs(filterTo); };
+      
+      var clearBtn = h("button", "yes", "🗑️ ล้างประวัติการกด");
+      clearBtn.onclick = function(){
+        if(confirm("คุณแน่ใจหรือไม่ที่จะลบประวัติการกดให้สะอาดตา?")){
+          b.textContent = "กำลังล้างประวัติ...";
+          jp("a=clear_logs&t="+encodeURIComponent(currentDevToken) + targetParam).then(function(res){
+            if(res.ok){
+              alert("ล้างประวัติเรียบร้อยแล้ว!");
+              logs(filterTo);
+            }else{
+              alert("ไม่สามารถลบประวัติได้");
+            }
+          });
+        }
+      };
+      
+      ctrlBox.append(refreshBtn, clearBtn);
+      b.appendChild(ctrlBox);
+
+      if(!r.rows || !r.rows.length){
+        b.appendChild(h("p", "sub", "ยังไม่มีประวัติการกด"));
+        return;
+      }
+      
+      var box=h("div","box");
+      box.appendChild(h("b",0,"📊 บันทึกการกดของผู้รับ (เรียงตามเวลาล่าสุด):"));
+      r.rows.reverse().forEach(function(x){
+        var timeStr=new Date(x[0]).toLocaleString("th-TH");
+        var logText = timeStr + " - [" + (x[4]||"ไม่ระบุชื่อ") + "] " + x[2] + (x[3] ? " (" + x[3] + ")" : "");
+        box.appendChild(h("div","ev", logText));
+      });
+      b.appendChild(box);
+    }).catch(function(){b.textContent="ไม่สามารถโหลดข้อมูลได้"});
+  }
+
+  // ระบบสร้างลิงก์แบบคลิกเดียวส่งให้ผู้รับ (ลูกคนนี้ใช้สร้างให้ผู้รับของตัวเอง)
+  function shareTab(){
+    b.innerHTML="";
+    var box = h("div", "box");
+    box.appendChild(h("b", 0, "🔗 สร้างลิงก์ส่งให้คนรับแบบคลิกเดียว"));
+    
+    var nameIn = h("input", "in"); nameIn.placeholder="ใส่ชื่อคนรับ (เช่น ฟ้า)";
+    var resBox = h("div", "box hide");
+    var submitBtn = h("button", "yes", "✨ สร้างลิงก์และคีย์เชื่อมต่อ");
+
+    submitBtn.onclick = function(){
+      var name = nameIn.value.trim();
+      if(!name){ alert("กรุณากรอกชื่อคนรับ"); return; }
+      
+      var shareUrl = location.origin + location.pathname + "?s=" + SITE + "&to=" + encodeURIComponent(name);
+      
+      resBox.classList.remove("hide");
+      resBox.innerHTML = "<b>ส่ง 2 สิ่งนี้ให้ " + name + ":</b><br><br>" +
+        "1. 🔗 <b>ลิงก์หน้าเว็บ:</b><br><input class='in' id='shareUrlVal' readonly value='" + shareUrl + "'><button class='alt' id='copyUrlBtn'>📋 คัดลอกลิงก์</button><br><br>" +
+        "2. 🔑 <b>คีย์ปลดล็อกสำหรับ " + name + ":</b><br><input class='in' id='shareKeyVal' readonly value='" + userChildKey + "'><button class='alt' id='copyKeyBtn'>📋 คัดลอกคีย์</button>";
+      
+      $("copyUrlBtn").onclick = function(){
+        navigator.clipboard.writeText(shareUrl);
+        alert("คัดลอกลิงก์เรียบร้อย!");
+      };
+      $("copyKeyBtn").onclick = function(){
+        navigator.clipboard.writeText(userChildKey);
+        alert("คัดลอกคีย์เรียบร้อย!");
+      };
+    };
+
+    box.append(nameIn, submitBtn, resBox);
+    b.appendChild(box);
+  }
+
+  // ปรับแต่งข้อความและรูปภาพของผู้พัฒนา
+  function editContent(){
+    b.innerHTML="";
+    var E = JSON.parse(JSON.stringify(CFG));
+    if(!E.titles) E.titles = JSON.parse(JSON.stringify(DEFAULT_CFG.titles));
+    if(!E.mediaList) E.mediaList = {};
+
+    function field(p, lb, v, f, isTextarea){
+      p.appendChild(h("label", 0, lb));
+      var i = h(isTextarea ? "textarea" : "input", "in");
+      i.value = v || "";
+      i.oninput = function(){ f(i.value) };
+      p.appendChild(i);
+    }
+
+    function mediaUploader(p, keyName, labelTitle){
+      var box = h("div", "box");
+      box.appendChild(h("b", 0, labelTitle));
+      
+      var fileIn = h("input", "in");
+      fileIn.type = "file";
+      fileIn.accept = "image/*,video/*";
+      
+      var previewArea = h("div");
+      function renderPreview(){
+        previewArea.innerHTML = "";
+        var val = E.mediaList[keyName];
+        if(val){
+          if(val.indexOf("data:video")===0){
+            var v = h("video", "media-preview");
+            v.src = val; v.controls = true;
+            previewArea.appendChild(v);
+          } else {
+            var img = h("img", "media-preview");
+            img.src = val;
+            previewArea.appendChild(img);
+          }
+          var removeBtn = h("button", "alt", "❌ ลบไฟล์สื่อนีค");
+          removeBtn.onclick = function(){
+            delete E.mediaList[keyName];
+            renderPreview();
+          };
+          previewArea.appendChild(removeBtn);
+        } else {
+          previewArea.appendChild(h("small", "sub", "ใช้ตัวการ์ตูนสุนัขแบบดั้งเดิม"));
+        }
+      }
+
+      fileIn.onchange = function(){
+        var file = fileIn.files[0];
+        if(!file) return;
+        var reader = new FileReader();
+        reader.onload = function(e){
+          E.mediaList[keyName] = e.target.result;
+          renderPreview();
+        };
+        reader.readAsDataURL(file);
+      };
+
+      box.append(fileIn, previewArea);
+      renderPreview();
+      p.appendChild(box);
+    }
+
+    function renderList(title, arr, labels){
+      var sec = h("div");
+      sec.appendChild(h("h2", 0, title));
+      arr.forEach(function(item, i){
+        var box = h("div", "box");
+        labels.forEach(function(lbl, j){
+          if(lbl) field(box, lbl, item[j], function(val){ item[j] = val }, j===2);
+        });
+        var delBtn = h("button", "alt", "ลบข้อนี้");
+        delBtn.onclick = function(){ arr.splice(i,1); renderAll(); };
+        box.appendChild(delBtn);
+        sec.appendChild(box);
+      });
+      var addBtn = h("button", "alt", "+ เพิ่มข้อใหม่");
+      addBtn.onclick = function(){ arr.push(["", "", ""]); renderAll(); };
+      sec.appendChild(addBtn);
+      return sec;
+    }
+
+    function renderAll(){
+      b.innerHTML="";
+      
+      b.appendChild(h("h2", 0, "🖼️ เลือกรูปภาพหรือวิดีโอจากในเครื่องสำหรับแต่ละฉาก"));
+      mediaUploader(b, "page0", "1. รูป/วิดีโอ หน้าแรก (คำขอโทษ)");
+      mediaUploader(b, "page1", "2. รูป/วิดีโอ หน้าความทรงจำ");
+      mediaUploader(b, "page2", "3. รูป/วิดีโอ หน้าคำสัญญา");
+      mediaUploader(b, "ask0", "4. รูป/วิดีโอ หน้าคำถามขอโอกาส");
+      mediaUploader(b, "happy", "5. รูป/วิดีโอ หน้าตอบตกลง (Happy)");
+
+      var titleBox = h("div", "box");
+      titleBox.appendChild(h("b", 0, "📌 หัวข้อต่าง ๆ บนหน้าเว็บ"));
+      field(titleBox, "ข้อความหน้าแรก (หัวข้อ)", E.titles.mainTitle, function(v){ E.titles.mainTitle = v });
+      field(titleBox, "ข้อความบนกระดาษซองจดหมาย", E.titles.paperText, function(v){ E.titles.paperText = v });
+      field(titleBox, "คำแนะนำใต้ซองจดหมาย", E.titles.subTitle, function(v){ E.titles.subTitle = v });
+      field(titleBox, "หัวข้อหน้าแรก (คำขอโทษ)", E.titles.page0Title, function(v){ E.titles.page0Title = v });
+      field(titleBox, "ข้อความย่อหน้าแรก", E.titles.page0Sub, function(v){ E.titles.page0Sub = v });
+      field(titleBox, "หัวข้อหน้าความทรงจำ", E.titles.page1Title, function(v){ E.titles.page1Title = v });
+      field(titleBox, "หัวข้อหน้าคำสัญญา", E.titles.page2Title, function(v){ E.titles.page2Title = v });
+      b.appendChild(titleBox);
+
+      b.appendChild(renderList("🌸 ความทรงจำ", E.memories, ["หัวข้อ", "ข้อความสั้น", "รายละเอียด"]));
+      b.appendChild(renderList("✔️ คำสัญญา", E.promises, ["คำสัญญา", 0, "รายละเอียด"]));
+
+      var askSec = h("div");
+      askSec.appendChild(h("h2", 0, "❓ คำถามขอโอกาส"));
+      E.asks.forEach(function(a, i){
+        var box = h("div", "box");
+        box.appendChild(h("b", 0, "คำถามข้อที่ " + (i+1)));
+        field(box, "คำถามหลัก", a.t, function(v){ a.t = v });
+        field(box, "ข้อความรอง", a.s, function(v){ a.s = v });
+        field(box, "ปุ่มตอบรับ", a.y, function(v){ a.y = v });
+        field(box, "ปุ่มปฏิเสธ", a.n, function(v){ a.n = v });
+        askSec.appendChild(box);
+      });
+      b.appendChild(askSec);
+
+      var saveBtn = h("button", "yes", "💾 บันทึกการเปลี่ยนแปลง");
+      saveBtn.onclick = function(){
+        CFG = E;
+        localStorage.setItem("apology_cfg", JSON.stringify(CFG));
+        applyTitles();
+        
+        fetch(CFG.endpoint, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify({ act: "save", token: currentDevToken, cfg: CFG })
+        });
+
+        alert("บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว!");
+        g.o.remove();
+        location.reload();
+      };
+
+      b.append(saveBtn);
+    }
+
+    renderAll();
+  }
+
+  // แท็บสร้างคีย์สุ่มให้ลูก (เฉพาะเว็บแม่ใหญ่เท่านั้น)
+  function masterGenKeyTab(){
+    b.innerHTML="";
+    var box = h("div", "box");
+    box.appendChild(h("b", 0, "🔑 สร้างคีย์สุ่มใหม่สำหรับลูก"));
+    
+    var resBox = h("div", "box hide");
+    var submitBtn = h("button", "yes", "🎲 สุ่มสร้างคีย์ลูกใหม่ (ไม่ซ้ำ)");
+
+    submitBtn.onclick = function(){
+      jp("a=create_child_key&t="+encodeURIComponent(currentDevToken)).then(function(res){
+        if(res.ok){
+          resBox.classList.remove("hide");
+          resBox.innerHTML = "<b>สร้างสำเร็จ! คีย์สำหรับส่งให้คนลูก:</b><br>" +
+            "<input class='in' readonly value='" + res.key + "'>";
+        } else {
+          alert(res.message || "สร้างคีย์ไม่สำเร็จ");
+        }
+      });
+    };
+
+    box.append(submitBtn, resBox);
+    b.appendChild(box);
+  }
+
+  tab("📊 ดูประวัติการกด", function(){ logs(); });
+  tab("🔗 สร้างลิงก์ส่งให้คนรับ", shareTab);
+  tab("✏️ ปรับแต่งเว็บตนเอง", editContent);
+  if(currentUserRole === "master"){
+    tab("👑 [แม่] สร้างคีย์ให้ลูก", masterGenKeyTab);
+  }
+  tab("🚪 ออกจากระบบ", function(){
+    currentDevToken = null;
+    currentUserRole = null;
+    userChildKey = null;
+    g.o.remove();
+  });
+  tab("✖ ปิด", function(){g.o.remove()});
+  
+  var titleRole = (currentUserRole === "master") ? "👑 แผงควบคุมเว็บแม่ (Master)" : "👤 แผงควบคุมผู้สร้าง (User)";
+  g.w.append(h("h2",0, titleRole), tabs, b);
+  logs();
+}
+
+/* ===== พื้นหลังกลีบดอกไม้ + พลุหัวใจ ===== */
+var cv=$("fx"),cx=cv.getContext("2d"),W,H,ps=[],cf=[],cols=["#ff8fa3","#ffc2d1","#e04a52","#ffd6a5","#b8c6ff"];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}rs();addEventListener("resize",rs);
+
+function pet(){return{x:Math.random()*W,y:Math.random()*H,r:4+Math.random()*7,v:.25+Math.random()*.6,s:Math.random()*6,d:(Math.random()-.5)*.03,c:cols[Math.random()*cols.length|0],a:.25+Math.random()*.4}}
+if(!RM)for(var i=0;i<34;i++)ps.push(pet());
+
+function heart(x,y,s,c,a,rot){
+  cx.save();cx.translate(x,y);cx.rotate(rot);cx.globalAlpha=a;cx.fillStyle=c;cx.beginPath();
+  cx.moveTo(0,s*.35);
+  cx.bezierCurveTo(-s,-s*.3,-s*.5,-s,0,-s*.4);
+  cx.bezierCurveTo(s*.5,-s,s,-s*.3,0,s*.35);
+  cx.fill();cx.restore();
+}
+
+function burst(){
+  if(RM)return;
+  for(var i=0;i<70;i++){
+    var a=Math.random()*6.28,v=3+Math.random()*7;
+    cf.push({x:W/2,y:H*.45,vx:Math.cos(a)*v,vy:Math.sin(a)*v-4,s:6+Math.random()*10,c:cols[Math.random()*cols.length|0],l:1,r:Math.random()*6});
+  }
+}
+
+function loop(){
+  cx.clearRect(0,0,W,H);
+  ps.forEach(function(p){
+    p.y+=p.v;p.x+=Math.sin(p.s)*.4;p.s+=p.d*3;
+    if(p.y>H+10){p.y=-10;p.x=Math.random()*W}
+    cx.save();cx.translate(p.x,p.y);cx.rotate(p.s);cx.globalAlpha=p.a;cx.fillStyle=p.c;cx.beginPath();cx.ellipse(0,0,p.r,p.r*.55,0,0,6.28);cx.fill();cx.restore();
+  });
+  cf=cf.filter(function(c){return c.l>0});
+  cf.forEach(function(c){
+    c.x+=c.vx;c.y+=c.vy;c.vy+=.18;c.vx*=.985;c.l-=.008;c.r+=.05;
+    heart(c.x,c.y,c.s,c.c,Math.max(c.l,0),Math.sin(c.r)*.5);
+  });
+  requestAnimationFrame(loop);
+}
+if(!RM)loop();
+</script>
+</body>
+</html>
